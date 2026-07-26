@@ -1,0 +1,88 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --background: 260 50% 5%;
+    --foreground: 260 20% 98%;
+    --card: 260 45% 8%;
+    --card-foreground: 260 20% 98%;
+    --primary: 270 80% 65%;
+    --primary-foreground: 260 20% 98%;
+    --accent: 45 90% 60%;
+    --accent-foreground: 260 50% 5%;
+    --muted: 260 30% 15%;
+    --muted-foreground: 260 20% 70%;
+    --border: 270 40% 20%;
+  }
+
+  body {
+    background-color: #080314;
+    color: #f3f0ff;
+    font-family: var(--font-sans), system-ui, -apple-system, sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+}
+
+/* Mystical Glow Utilities */
+.cosmic-bg {
+  background: radial-gradient(circle at 50% 20%, rgba(126, 34, 206, 0.25), transparent 60%),
+              radial-gradient(circle at 80% 80%, rgba(234, 179, 8, 0.15), transparent 50%),
+              radial-gradient(circle at 10% 60%, rgba(79, 70, 229, 0.2), transparent 50%),
+              #080314;
+}
+
+.glass-card {
+  background: rgba(19, 10, 36, 0.65);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(168, 85, 247, 0.2);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+.glass-card-gold {
+  background: rgba(28, 20, 10, 0.7);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(234, 179, 8, 0.35);
+  box-shadow: 0 8px 32px 0 rgba(234, 179, 8, 0.15);
+}
+
+.neon-text-purple {
+  text-shadow: 0 0 12px rgba(168, 85, 247, 0.7), 0 0 24px rgba(168, 85, 247, 0.4);
+}
+
+.neon-text-gold {
+  text-shadow: 0 0 12px rgba(234, 179, 8, 0.7), 0 0 24px rgba(234, 179, 8, 0.4);
+}
+
+.border-glow {
+  box-shadow: 0 0 15px rgba(168, 85, 247, 0.4);
+}
+
+/* 3D Card Flip Perspective */
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+.transform-style-3d {
+  transform-style: preserve-3d;
+}
+
+.backface-hidden {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.rotate-y-180 {
+  transform: rotateY(180deg);
+}
+
+/* Shimmer Keyframes */
+@keyframes pulseGlow {
+  0%, 100% { opacity: 0.4; transform: scale(1); }
+  50% { opacity: 0.8; transform: scale(1.05); }
+}
+
+.animate-pulse-glow {
+  animation: pulseGlow 4s infinite ease-in-out;
+}
