@@ -2,6 +2,8 @@ import type { Metadata } from 'next';
 import { Inter, Cinzel } from 'next/font/google';
 import './globals.css';
 import { PaywallModal } from '@/components/paywall-modal';
+import { StarfieldBg } from '@/components/ui/starfield-bg';
+import { SoundToggle } from '@/components/ui/sound-toggle';
 import Link from 'next/link';
 import { Sparkles, Compass, Heart, MessageSquare, ShoppingBag, Flame } from 'lucide-react';
 
@@ -20,7 +22,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="fr" className={`${inter.variable} ${cinzel.variable}`}>
-      <body className="cosmic-bg text-purple-50 min-h-screen flex flex-col justify-between selection:bg-purple-500 selection:text-white">
+      <body className="cosmic-bg text-purple-50 min-h-screen flex flex-col justify-between selection:bg-purple-500 selection:text-white relative overflow-x-hidden">
+        {/* Floating Canvas Starfield & Meteors Background */}
+        <StarfieldBg />
+
         {/* Top Navbar */}
         <header className="sticky top-0 z-40 w-full glass-card border-b border-purple-500/20 px-4 py-3">
           <div className="max-w-6xl mx-auto flex items-center justify-between">
@@ -51,8 +56,10 @@ export default function RootLayout({
               </Link>
             </nav>
 
-            {/* Action CTA */}
+            {/* Action CTA & Sound Toggle */}
             <div className="flex items-center gap-3">
+              <SoundToggle />
+
               <Link
                 href="/onboarding"
                 className="text-xs font-bold bg-gradient-to-r from-amber-500 to-yellow-400 text-slate-950 px-4 py-2 rounded-xl shadow-md hover:brightness-110 transition-all flex items-center gap-1.5"
@@ -63,8 +70,8 @@ export default function RootLayout({
           </div>
         </header>
 
-        {/* Main Content */}
-        <main className="flex-1 w-full max-w-6xl mx-auto px-4 py-6">
+        {/* Main Content Container */}
+        <main className="flex-1 w-full max-w-6xl mx-auto px-4 py-6 relative z-10">
           {children}
         </main>
 
