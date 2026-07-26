@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Send, Sparkles, Bot, User, Coins, Lock, Heart, Briefcase, Compass, Loader2 } from 'lucide-react';
+import { Send, Sparkles, Bot, User, Coins, Heart, Briefcase, Compass, Loader2 } from 'lucide-react';
 import { useAstroStore } from '@/store/use-astro-store';
 import { Button } from '@/components/ui/button';
 
@@ -10,6 +10,7 @@ interface Message {
   id: string;
   sender: 'user' | 'oracle';
   text: string;
+  perspectives?: string[];
   category?: string;
   timestamp: string;
 }
@@ -83,6 +84,7 @@ export function OracleChatBox() {
         id: (Date.now() + 1).toString(),
         sender: 'oracle',
         text: data.response || 'Les voix des astres se sont momentanément troublées, mais soyez certain(e) que la lumière céleste vous protège.',
+        perspectives: data.perspectives || [],
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       };
 
@@ -101,7 +103,7 @@ export function OracleChatBox() {
   };
 
   return (
-    <div className="w-full max-w-2xl glass-card rounded-3xl border-purple-500/30 flex flex-col h-[620px] shadow-2xl relative overflow-hidden">
+    <div className="w-full max-w-2xl glass-card rounded-3xl border-purple-500/30 flex flex-col h-[640px] shadow-2xl relative overflow-hidden">
       {/* Header Bar */}
       <div className="p-4 border-b border-purple-500/20 bg-purple-950/40 flex items-center justify-between">
         <div className="flex items-center gap-3">
@@ -114,7 +116,7 @@ export function OracleChatBox() {
             <h3 className="text-base font-bold text-white font-serif">L'Oracle IA AstroPulse</h3>
             <div className="flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
-              <span className="text-[11px] text-purple-300">Alignement Cosmique Actif</span>
+              <span className="text-[11px] text-purple-300">Alignement Cosmique Multi-Perspectives</span>
             </div>
           </div>
         </div>
@@ -192,13 +194,31 @@ export function OracleChatBox() {
               </div>
 
               <div
-                className={`max-w-[80%] rounded-2xl p-3.5 text-xs leading-relaxed shadow-md ${
+                className={`max-w-[85%] rounded-2xl p-3.5 text-xs leading-relaxed shadow-md space-y-2.5 ${
                   msg.sender === 'user'
                     ? 'bg-gradient-to-r from-purple-700 to-indigo-700 text-white rounded-tr-none'
                     : 'glass-card-gold text-purple-50 rounded-tl-none border-yellow-400/30'
                 }`}
               >
                 <p className="whitespace-pre-line">{msg.text}</p>
+
+                {/* Multiple Perspectives / Guidance Choices */}
+                {msg.perspectives && msg.perspectives.length > 0 && (
+                  <div className="pt-2 border-t border-yellow-400/20 space-y-1.5">
+                    <span className="text-[10px] font-bold text-yellow-300 uppercase tracking-wider block">
+                      🔮 Voies de Réflexion Proposées par l'Oracle :
+                    </span>
+                    {msg.perspectives.map((p, i) => (
+                      <div
+                        key={i}
+                        className="bg-purple-950/60 p-2 rounded-xl border border-yellow-400/20 text-[11px] text-purple-100 font-medium leading-normal hover:border-yellow-400/50 transition-colors"
+                      >
+                        {p}
+                      </div>
+                    ))}
+                  </div>
+                )}
+
                 <span className="block text-[9px] text-purple-300/60 text-right mt-1.5">
                   {msg.timestamp}
                 </span>
@@ -214,7 +234,7 @@ export function OracleChatBox() {
             </div>
             <div className="glass-card-gold p-3.5 rounded-2xl rounded-tl-none flex items-center gap-2 text-xs text-yellow-200">
               <Loader2 className="w-4 h-4 animate-spin text-yellow-400" />
-              L'Oracle consulte la grande carte céleste...
+              L'Oracle génère vos voies de réponse personnalisées...
             </div>
           </div>
         )}
