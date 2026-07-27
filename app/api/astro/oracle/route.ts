@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import OpenAI from 'openai';
-import { ORACLE_SYSTEM_PROMPT } from '@/lib/astro-engine';
+import { ORACLE_SYSTEM_PROMPT, generateVariedOracleResponse } from '@/lib/astro-engine';
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY || 'sk-proj-dummy',
@@ -64,7 +64,11 @@ export async function POST(req: Request) {
       detectedCat = 'destiny';
     }
 
-    let result = RELEVANT_RESPONSES[detectedCat](question, sign);
+    const generateFallback = RELEVANT_RESPONSES[detectedCat] || RELEVANT_RESPONSES.general;
+    let result = generateFallback(question, sign);
+    if (Math.random() > 0.3) {
+      result = generateVariedOracleResponse(question, detectedCat, sign);
+    }
 
     // Call OpenAI if API key is active
     if (process.env.OPENAI_API_KEY && !process.env.OPENAI_API_KEY.includes('dummy')) {

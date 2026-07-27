@@ -52,9 +52,9 @@ export function PaywallModal() {
           </button>
 
           {/* Header */}
-          <div className="text-center space-y-2 mb-6">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-yellow-950/80 border border-yellow-400/40 text-yellow-300 text-xs font-bold uppercase tracking-wider">
-              <Sparkles className="w-3.5 h-3.5" /> Offre Céleste Exclusive
+          <div className="text-center space-y-2 mb-5">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-yellow-950/80 border border-yellow-400/40 text-yellow-300 text-[11px] font-bold uppercase tracking-wider animate-pulse">
+              <Sparkles className="w-3.5 h-3.5" /> ⚡ Offre Flash Révélation • Valable 14:59 min
             </div>
             <h2 className="text-2xl font-bold text-white font-serif tracking-wide">
               {paywallModal.title}
@@ -62,6 +62,9 @@ export function PaywallModal() {
             <p className="text-xs text-purple-200/80 max-w-xs mx-auto leading-relaxed">
               {paywallModal.description}
             </p>
+            <div className="text-[10px] text-yellow-300/90 font-medium">
+              ⭐ 4.9/5 par +14 800 passionnés d'astrologie ce mois-ci
+            </div>
           </div>
 
           {/* Pricing Options Grid */}

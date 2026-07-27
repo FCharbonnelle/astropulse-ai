@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
 import confetti from 'canvas-confetti';
 import { Flame, Coins, Gift, CheckCircle2 } from 'lucide-react';
@@ -9,15 +9,16 @@ import { playCoinSound } from '@/lib/sound-fx';
 import { Button } from '@/components/ui/button';
 
 export function StreakReward() {
-  const { profile, addCoins } = useAstroStore();
-  const [claimed, setClaimed] = useState(false);
+  const { profile, addCoins, setProfile } = useAstroStore();
+  const today = new Date().toISOString().slice(0, 10);
+  const claimed = profile?.lastStreakClaimDate === today;
 
   const handleClaim = () => {
     if (claimed) return;
 
     playCoinSound();
     addCoins(1);
-    setClaimed(true);
+    setProfile({ lastStreakClaimDate: today });
 
     confetti({
       particleCount: 50,

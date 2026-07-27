@@ -44,12 +44,12 @@ export function CompatibilityGauge({
 
       {/* SVG Circular Progress Gauge */}
       <div className="relative w-48 h-48 flex items-center justify-center">
-        <svg className="w-full h-full transform -rotate-90" viewBox="0 0 180 180">
+        <svg className="w-full h-full transform -rotate-90 drop-shadow-[0_0_15px_rgba(236,72,153,0.5)]" viewBox="0 0 180 180">
           <defs>
             <linearGradient id="gaugeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#ec4899" />
-              <stop offset="50%" stopColor="#a855f7" />
-              <stop offset="100%" stopColor="#eab308" />
+              <stop offset="0%" stopColor="#f43f5e" />
+              <stop offset="50%" stopColor="#c084fc" />
+              <stop offset="100%" stopColor="#fef08a" />
             </linearGradient>
           </defs>
           {/* Background circle */}

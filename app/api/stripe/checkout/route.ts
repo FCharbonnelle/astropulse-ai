@@ -33,8 +33,9 @@ export async function POST(req: Request) {
     }
 
     // Fallback simulation for local dev without active Stripe API key
+    const paymentType = priceId.includes('vip') ? 'success_vip' : 'success_coins';
     return NextResponse.json({
-      url: `${appUrl}/dashboard?payment=success_simulated`,
+      url: `${appUrl}/dashboard?payment=${paymentType}`,
     });
   } catch (error) {
     return NextResponse.json(

@@ -23,15 +23,22 @@ const SAMPLE_QUESTIONS = [
 ];
 
 export function OracleChatBox() {
-  const { profile, useCoin, openPaywall } = useAstroStore();
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: 'welcome',
-      sender: 'oracle',
-      text: `Salutations stellaires, ${profile?.name || 'Cher Voyageur'}. Je suis l'Oracle d'AstroPulse. Posez-moi la question qui préoccupe votre âme.`,
-      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-    },
-  ]);
+  const { profile, useCoin, openPaywall, oracleMessages, setOracleMessages } = useAstroStore();
+
+  const initialWelcome: Message = {
+    id: 'welcome',
+    sender: 'oracle',
+    text: `Salutations stellaires, ${profile?.name || 'Cher Voyageur'}. Je suis l'Oracle d'AstroPulse. Posez-moi la question qui préoccupe votre âme.`,
+    timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+  };
+
+  const messages = oracleMessages.length > 0 ? (oracleMessages as Message[]) : [initialWelcome];
+
+  const setMessages = (updateFn: (prev: Message[]) => Message[]) => {
+    const updated = updateFn(messages);
+    setOracleMessages(updated as any);
+  };
+
   const [input, setInput] = useState('');
   const [category, setCategory] = useState('general');
   const [isLoading, setIsLoading] = useState(false);
@@ -45,9 +52,9 @@ export function OracleChatBox() {
     const textToSend = questionText || input.trim();
     if (!textToSend || isLoading) return;
 
-    // Check coins / VIP status
-    const hasAccess = useCoin();
-    if (!hasAccess) {
+    // Verify coin balance / VIP status BEFORE sending, but do NOT deduct yet
+    const canAccess = profile?.isVip || (profile?.coinsBalance ?? 0) > 0;
+    if (!canAccess) {
       openPaywall(
         'Crédits Étoiles Épuisés',
         'Rechargez vos crédits ou passez VIP pour bénéficier de consultations Oracle illimitées.',
@@ -80,6 +87,10 @@ export function OracleChatBox() {
       });
 
       const data = await res.json();
+      
+      // Deduct coin ONLY after API successfully responds
+      useCoin();
+
       const oracleMsg: Message = {
         id: (Date.now() + 1).toString(),
         sender: 'oracle',
@@ -90,10 +101,11 @@ export function OracleChatBox() {
 
       setMessages((prev) => [...prev, oracleMsg]);
     } catch {
+      // API error: do NOT deduct coin
       const errorMsg: Message = {
         id: (Date.now() + 1).toString(),
         sender: 'oracle',
-        text: 'Les flux énergétiques cosmiques ont été perturbés. Réessayez dans un instant.',
+        text: 'Les flux énergétiques cosmiques ont été perturbés. Votre crédit n\'a pas été décompté. Réessayez dans un instant.',
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       };
       setMessages((prev) => [...prev, errorMsg]);
@@ -103,20 +115,20 @@ export function OracleChatBox() {
   };
 
   return (
-    <div className="w-full max-w-2xl glass-card rounded-3xl border-purple-500/30 flex flex-col h-[640px] shadow-2xl relative overflow-hidden">
+    <div className="w-full max-w-2xl glass-card rounded-3xl border-2 border-purple-500/40 flex flex-col h-[640px] shadow-2xl relative overflow-hidden border-glow-purple">
       {/* Header Bar */}
-      <div className="p-4 border-b border-purple-500/20 bg-purple-950/40 flex items-center justify-between">
+      <div className="p-4 border-b border-purple-500/20 bg-purple-950/60 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-purple-600 to-amber-400 p-0.5 shadow-md">
+          <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-purple-600 via-amber-400 to-yellow-300 p-0.5 shadow-lg border-glow-gold">
             <div className="w-full h-full rounded-full bg-slate-950 flex items-center justify-center">
-              <Sparkles className="w-5 h-5 text-yellow-300 animate-pulse" />
+              <Sparkles className="w-5 h-5 text-yellow-300 animate-spin-slow" />
             </div>
           </div>
           <div>
-            <h3 className="text-base font-bold text-white font-serif">L'Oracle IA AstroPulse</h3>
+            <h3 className="text-base font-bold text-white font-serif gold-text-shimmer">L'Oracle IA AstroPulse</h3>
             <div className="flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
-              <span className="text-[11px] text-purple-300">Alignement Cosmique Multi-Perspectives</span>
+              <span className="text-[11px] text-purple-200">Alignement Cosmique Multi-Perspectives</span>
             </div>
           </div>
         </div>

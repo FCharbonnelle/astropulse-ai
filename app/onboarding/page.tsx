@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Sparkles, Calendar, Clock, MapPin, Heart, ArrowRight, CheckCircle2 } from 'lucide-react';
 import { useAstroStore } from '@/store/use-astro-store';
-import { getZodiacSign } from '@/lib/astro-engine';
+import { getZodiacSign, calculateAscendant } from '@/lib/astro-engine';
 import { Button } from '@/components/ui/button';
 
 export default function OnboardingPage() {
@@ -22,6 +22,7 @@ export default function OnboardingPage() {
   });
 
   const computedSign = getZodiacSign(formData.birthDate);
+  const computedAscendant = calculateAscendant(formData.birthDate, formData.birthTime);
 
   const handleNext = () => {
     if (step < 3) {
@@ -34,6 +35,7 @@ export default function OnboardingPage() {
         birthTime: formData.birthTime,
         birthPlace: formData.birthPlace,
         sunSign: computedSign,
+        ascendantSign: computedAscendant,
         loveStatus: formData.loveStatus,
         coinsBalance: 3,
         streakCount: 1,
@@ -146,6 +148,17 @@ export default function OnboardingPage() {
                   placeholder="Ex: Lyon, France"
                   className="w-full bg-purple-950/40 border border-purple-500/30 rounded-xl px-4 py-3 text-sm text-white placeholder-purple-300/40 focus:outline-none focus:border-yellow-400"
                 />
+              </div>
+
+              {/* Live Computed Ascendant Preview */}
+              <div className="glass-card-gold p-4 rounded-2xl border-amber-400/40 flex items-center justify-between">
+                <div>
+                  <span className="text-[11px] uppercase tracking-wider text-amber-300 font-semibold block">
+                    Votre Ascendant Déduit :
+                  </span>
+                  <span className="text-xl font-bold font-serif text-white">Ascendant {computedAscendant}</span>
+                </div>
+                <div className="text-2xl">🌅</div>
               </div>
             </motion.div>
           )}

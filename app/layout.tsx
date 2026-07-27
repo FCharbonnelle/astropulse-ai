@@ -61,7 +61,7 @@ export default function RootLayout({
               <SoundToggle />
 
               <Link
-                href="/onboarding"
+                href="/dashboard"
                 className="text-xs font-bold bg-gradient-to-r from-amber-500 to-yellow-400 text-slate-950 px-4 py-2 rounded-xl shadow-md hover:brightness-110 transition-all flex items-center gap-1.5"
               >
                 <Flame className="w-3.5 h-3.5 fill-slate-950" /> Thème Astral

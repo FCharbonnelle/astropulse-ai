@@ -10,13 +10,13 @@ export default function LandingPage() {
   return (
     <div className="space-y-16 py-8">
       {/* Hero Section */}
-      <section className="text-center space-y-6 max-w-3xl mx-auto pt-6">
+      <section className="text-center space-y-6 max-w-3xl mx-auto pt-6 relative">
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-purple-900/40 border border-purple-400/40 text-yellow-300 text-xs font-bold uppercase tracking-widest shadow-lg"
+          className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-purple-900/60 border border-yellow-400/50 text-yellow-300 text-xs font-bold uppercase tracking-widest shadow-xl border-glow-gold animate-pulse-glow"
         >
-          <Sparkles className="w-4 h-4" /> L'IA Astrologique Nouvelle Génération
+          <Sparkles className="w-4 h-4 text-yellow-300 animate-spin-slow" /> L'EXPÉRIENCE ASTROLOGIQUE IA N°1 EN FRANCE
         </motion.div>
 
         <motion.h1
@@ -26,13 +26,13 @@ export default function LandingPage() {
           className="text-4xl md:text-6xl font-black font-serif leading-tight text-white tracking-wide"
         >
           Décodez votre Destinée avec l'
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-amber-300 to-yellow-400 neon-text-purple">
+          <span className="gold-text-shimmer block mt-1">
             Oracle IA Astrologique
           </span>
         </motion.h1>
 
-        <p className="text-base md:text-lg text-purple-200/80 max-w-xl mx-auto leading-relaxed">
-          Tirages de Tarot 3D quotidiens, alchimie de couple ultra-précise et guidance spirituelle en direct propulsée par GPT-4o-mini.
+        <p className="text-base md:text-lg text-purple-200/90 max-w-xl mx-auto leading-relaxed">
+          Tirages de Tarot 3D quotidiens, alchimie de couple ultra-précise, calcul de votre <strong className="text-yellow-300">Chemin de Vie</strong> et guidance spirituelle en direct.
         </p>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">

@@ -3,19 +3,34 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { Sparkles, Flame, Coins, Heart, MessageSquare, Compass, ArrowRight, RefreshCw, Layers } from 'lucide-react';
+import { Sparkles, Flame, Coins, Heart, MessageSquare, Compass, ArrowRight, RefreshCw, Layers, Lock } from 'lucide-react';
 import { useAstroStore } from '@/store/use-astro-store';
 import { DailyCardFlip } from '@/components/astro/daily-card-flip';
 import { ThreeCardSpread } from '@/components/astro/three-card-spread';
 import { ZodiacWheel } from '@/components/astro/zodiac-wheel';
 import { StreakReward } from '@/components/astro/streak-reward';
 import { Button } from '@/components/ui/button';
-import { ZodiacSign } from '@/lib/astro-engine';
+import { ZodiacSign, calculateLifePath, getLifePathDetails, getDailyTransits } from '@/lib/astro-engine';
 
 export default function DashboardPage() {
-  const { profile, dailyReading, setDailyReading, openPaywall } = useAstroStore();
+  const { profile, dailyReading, setDailyReading, openPaywall, addCoins, setVipStatus } = useAstroStore();
   const [loadingCard, setLoadingCard] = useState(false);
   const [spreadMode, setSpreadMode] = useState<'single' | 'three'>('single');
+
+  // Process payment return parameters
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const payment = params.get('payment');
+      if (payment === 'success_coins' || payment === 'success_simulated') {
+        addCoins(5);
+        window.history.replaceState({}, '', '/dashboard');
+      } else if (payment === 'success_vip') {
+        setVipStatus(true);
+        window.history.replaceState({}, '', '/dashboard');
+      }
+    }
+  }, [addCoins, setVipStatus]);
 
   // Fetch daily tarot card reading on load if not already generated
   useEffect(() => {
@@ -68,7 +83,9 @@ export default function DashboardPage() {
               )}
             </div>
             <p className="text-xs text-yellow-200/80">
-              Signe Solaire : <strong className="text-white">{profile?.sunSign || 'Taureau'}</strong> • Situation : {profile?.loveStatus || 'Célibataire'}
+              Signe Solaire : <strong className="text-white">{profile?.sunSign || 'Taureau'}</strong>
+              {profile?.ascendantSign && <> • Ascendant : <strong className="text-white">{profile.ascendantSign}</strong></>}
+              {' '}• Situation : {profile?.loveStatus || 'Célibataire'}
             </p>
           </div>
         </div>
@@ -135,6 +152,76 @@ export default function DashboardPage() {
 
       {/* Interactive Zodiac Wheel Section */}
       <ZodiacWheel userSign={(profile?.sunSign as ZodiacSign) || 'Taureau'} />
+
+      {/* Numerology & Daily Transits Highlights (High-Addiction & Paywall Triggers) */}
+      <section className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full my-4">
+        {/* Numerology Life Path Card */}
+        {(() => {
+          const pathNum = calculateLifePath(profile?.birthDate || '1998-05-14');
+          const details = getLifePathDetails(pathNum);
+          return (
+            <div className="glass-card-gold p-6 rounded-3xl border-yellow-400/40 space-y-4 shadow-xl relative overflow-hidden flex flex-col justify-between">
+              <div className="flex items-center justify-between">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-yellow-300 bg-yellow-950/80 px-3 py-1 rounded-full border border-yellow-400/30">
+                  ✨ Vôtre Chemin de Vie Numérologique
+                </span>
+                <span className="text-2xl font-serif font-black text-yellow-300">#{pathNum}</span>
+              </div>
+              <div>
+                <h3 className="text-xl font-bold text-white font-serif mb-1">{details.archetype}</h3>
+                <p className="text-xs text-purple-100 leading-relaxed">{details.summary}</p>
+              </div>
+              <div className="pt-3 border-t border-yellow-400/20 flex items-center justify-between text-xs text-yellow-200">
+                <span>Pouvoir Karmique : <strong className="text-white">{details.superPower}</strong></span>
+              </div>
+            </div>
+          );
+        })()}
+
+        {/* Daily Planetary Transits & VIP Paywall Trigger */}
+        <div className="glass-card p-6 rounded-3xl border-purple-500/30 space-y-4 shadow-xl flex flex-col justify-between">
+          <div className="flex items-center justify-between">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-purple-300 bg-purple-900/40 px-3 py-1 rounded-full border border-purple-400/30">
+              🌌 Transits Planétaires du Jour
+            </span>
+            <span className="text-xs text-amber-300 font-bold">Actifs</span>
+          </div>
+
+          <div className="space-y-2.5">
+            {getDailyTransits((profile?.sunSign as ZodiacSign) || 'Taureau').map((tr) => (
+              <div
+                key={tr.id}
+                onClick={() => {
+                  if (tr.isVipOnly && !profile?.isVip) {
+                    openPaywall('Analyse de Transit VIP', 'Débloquez l\'impact financier et karmique des planètes avec le Pass VIP.', 'vip');
+                  }
+                }}
+                className={`p-3 rounded-2xl border text-xs flex items-center justify-between transition-all ${
+                  tr.isVipOnly && !profile?.isVip
+                    ? 'bg-purple-950/60 border-yellow-400/30 hover:border-yellow-400/80 cursor-pointer'
+                    : 'bg-purple-950/30 border-purple-500/20'
+                }`}
+              >
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="font-bold text-white">{tr.planet}</span>
+                    <span className="text-[10px] text-purple-300 font-medium">{tr.aspect}</span>
+                  </div>
+                  <p className="text-[11px] text-purple-200/80 mt-0.5">{tr.impact}</p>
+                </div>
+
+                {tr.isVipOnly && !profile?.isVip ? (
+                  <span className="text-[10px] bg-yellow-400 text-slate-950 font-extrabold px-2.5 py-1 rounded-full flex items-center gap-1 shadow-md">
+                    <Lock className="w-3 h-3" /> VIP
+                  </span>
+                ) : (
+                  <span className="text-xs text-emerald-400 font-bold">✓ Actif</span>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
 
       {/* Quick Navigation Cards */}
       <section className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">

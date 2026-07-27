@@ -56,8 +56,8 @@ export function ZodiacWheel({ userSign }: { userSign: ZodiacSign }) {
               onClick={() => setSelectedSign(item)}
               className={`p-3 rounded-2xl border flex flex-col items-center justify-center transition-all ${
                 isSelected
-                  ? 'glass-card-gold border-yellow-400 text-yellow-300 scale-105 shadow-lg shadow-yellow-500/20'
-                  : 'glass-card border-purple-500/20 text-purple-200 hover:border-purple-400/50'
+                  ? 'glass-card-gold border-2 border-yellow-400 text-yellow-300 scale-105 shadow-xl shadow-yellow-500/30 border-glow-gold'
+                  : 'glass-card border-purple-500/20 text-purple-200 hover:border-purple-400/50 hover:scale-105'
               }`}
             >
               <span className="text-2xl mb-1">{item.symbol}</span>

@@ -11,20 +11,32 @@ export async function POST(req: Request) {
     const { sunSign } = await req.json();
     const sign = sunSign || 'Bélier';
 
-    // Pick a card based on current date so it's deterministic for the day
-    const todayStr = new Date().toISOString().split('T')[0];
+    // Pick a card based on current date + sun sign so different signs get distinct cards
+    const seed = `${new Date().toISOString().split('T')[0]}_${sign}`;
     let hash = 0;
-    for (let i = 0; i < todayStr.length; i++) {
-      hash = (hash * 31 + todayStr.charCodeAt(i)) % TAROT_DECK.length;
+    for (let i = 0; i < seed.length; i++) {
+      hash = (hash * 37 + seed.charCodeAt(i)) % TAROT_DECK.length;
     }
-    const card = TAROT_DECK[hash];
+    const card = TAROT_DECK[Math.abs(hash)];
 
-    // Try OpenAI call, fallback to rich built-in reading if API key is invalid/missing
-    let readingText = `${card.name} résonne puissamment dans la maison astrale du ${sign}. Les astres indiquent une journée propice au renouveau et aux initiatives créatives.`;
-    let adviceText = `Alignez vos pensées avec vos intentions les plus hautes. Prenez 5 minutes de méditation au soleil.`;
-    let loveScore = 88;
-    let energyScore = 92;
-    let workScore = 84;
+    // Rich varied fallback reading
+    const readings = [
+      `${card.name} résonne avec puissance dans le ciel du ${sign}. ${card.summary} Une vague d'inspiration débloquera vos projets aujourd'hui.`,
+      `Sous le regard bénéfique des astres, ${card.name} vous transmet son énergie pour le signe du ${sign}. Mots-clés du jour : ${card.keywords.join(', ')}.`,
+      `L'arcane ${card.name} s'invite dans votre thème quotidien (${sign}). Accueillez cette vibration pour manifester vos désirs profonds.`
+    ];
+
+    const advices = [
+      `Prenez un moment pour respirer en conscience et écouter vos pressentiments avant toute décision majeure.`,
+      `Exprimez vos intentions à voix haute et accordez-vous une pause régénératrice en fin de journée.`,
+      `Portez votre attention sur la gratitude : l'univers répond favorablement à votre attitude positive.`
+    ];
+
+    let readingText = readings[Math.abs(hash) % readings.length];
+    let adviceText = advices[Math.abs(hash) % advices.length];
+    let loveScore = 75 + (Math.abs(hash * 7) % 23);
+    let energyScore = 70 + (Math.abs(hash * 11) % 28);
+    let workScore = 72 + (Math.abs(hash * 13) % 26);
 
     if (process.env.OPENAI_API_KEY && !process.env.OPENAI_API_KEY.includes('dummy')) {
       try {

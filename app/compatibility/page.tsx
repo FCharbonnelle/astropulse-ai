@@ -151,8 +151,13 @@ export default function CompatibilityPage() {
                 <Sparkles className="w-5 h-5 text-yellow-300" /> Bilan d'Affinité Astrale
               </h3>
 
-              <div className={`space-y-4 text-xs text-purple-100 leading-relaxed ${!result.isUnlocked ? 'blur-sm select-none opacity-50 pointer-events-none' : ''}`}>
-                <p className="whitespace-pre-line">{result.detailedAnalysis}</p>
+              <div className={`space-y-4 text-xs text-purple-100 leading-relaxed ${!result.isUnlocked ? 'blur-md select-none opacity-30 pointer-events-none' : ''}`}>
+                <p className="whitespace-pre-line">
+                  {result.isUnlocked
+                    ? result.detailedAnalysis
+                    : `${result.detailedAnalysis.substring(0, 65)}... \n\n🔒 [Le reste du rapport d'alchimie céleste est chiffré par les astres. Débloquez pour lire la suite.]`
+                  }
+                </p>
               </div>
 
               {/* Locked Overlay Paywall Trigger */}

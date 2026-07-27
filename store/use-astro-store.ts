@@ -9,11 +9,22 @@ export interface UserProfile {
   birthTime?: string;
   birthPlace?: string;
   sunSign: string;
+  ascendantSign?: string;
   loveStatus: string;
   isVip: boolean;
   coinsBalance: number;
   streakCount: number;
   lastReadingDate?: string;
+  lastStreakClaimDate?: string;
+}
+
+export interface OracleMessage {
+  id: string;
+  sender: 'user' | 'oracle';
+  text: string;
+  perspectives?: string[];
+  category?: string;
+  timestamp: string;
 }
 
 export interface DailyReadingData {
@@ -29,6 +40,7 @@ export interface DailyReadingData {
 interface AstroStoreState {
   profile: UserProfile | null;
   dailyReading: DailyReadingData | null;
+  oracleMessages: OracleMessage[];
   paywallModal: {
     isOpen: boolean;
     title: string;
@@ -37,6 +49,7 @@ interface AstroStoreState {
   };
   setProfile: (profile: Partial<UserProfile>) => void;
   setDailyReading: (reading: DailyReadingData) => void;
+  setOracleMessages: (messages: OracleMessage[]) => void;
   flipDailyCard: () => void;
   useCoin: () => boolean;
   addCoins: (amount: number) => void;
@@ -58,6 +71,7 @@ export const useAstroStore = create<AstroStoreState>()(
         streakCount: 3,
       },
       dailyReading: null,
+      oracleMessages: [],
       paywallModal: {
         isOpen: false,
         title: 'Débloquez votre Destinée',
@@ -72,6 +86,9 @@ export const useAstroStore = create<AstroStoreState>()(
 
       setDailyReading: (reading) =>
         set({ dailyReading: reading }),
+
+      setOracleMessages: (messages) =>
+        set({ oracleMessages: messages }),
 
       flipDailyCard: () =>
         set((state) => ({
